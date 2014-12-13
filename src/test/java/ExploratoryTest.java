@@ -4,13 +4,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
+import uk.co.badgersinfoil.metaas.ActionScriptWriter;
 import uk.co.badgersinfoil.metaas.dom.*;
 import static uk.co.badgersinfoil.metaas.dom.ASConstants.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.io.Writer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -48,6 +50,37 @@ public class ExploratoryTest
     @Test
     public void testDialogWrapperCanBeGeneratedFromXML() throws Exception
     {
+        ActionScriptFactory factory = new ActionScriptFactory();
+        ActionScriptProject project = buildDialogProject(factory, OUTPUT_LOCATION);
+        project.performAutoImport();
+        project.writeAll();
+    }
+
+    @Test
+    public void testACustomWriterCanBeUsed() throws Exception
+    {
+        ActionScriptFactory factory = new ActionScriptFactory() {
+            @Override
+            public ActionScriptWriter newWriter()
+            {
+                return new ActionScriptWriter()
+                {
+                    @Override
+                    public void write(Writer writer, ASCompilationUnit cu) throws IOException
+                    {
+                        writer.write(cu.getType().getName());
+                    }
+                };
+            }
+        };
+
+        ActionScriptProject project = buildDialogProject(factory, OUTPUT_LOCATION + "/custom");
+        project.performAutoImport();
+        project.writeAll();
+    }
+
+    private ActionScriptProject buildDialogProject(ActionScriptFactory factory, String outputLocation) throws Exception
+    {
         InputStream stream = getClass().getResourceAsStream("PreGameDialog.xml");
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(stream);
@@ -55,8 +88,7 @@ public class ExploratoryTest
         String dialogName = capitalize(nameAttribute(scene));
         assertThat(dialogName, equalTo("PreGameDialog"));
 
-        ActionScriptFactory factory = new ActionScriptFactory();
-        ActionScriptProject project = factory.newEmptyASProject(OUTPUT_LOCATION);
+        ActionScriptProject project = factory.newEmptyASProject(outputLocation);
 
         project.addClasspathEntry("src/main/actionscript");
         ASCompilationUnit unit = project.newClass(dialogName);
@@ -77,17 +109,7 @@ public class ExploratoryTest
             clazz.newMethod("get" + capitalizedName, PUBLIC, field.getType()).newReturn(field.getName());
             constructor.addStmt(field.getName() + " = rootObject.find(\"" + name + "\")");
         }
-
-        project.performAutoImport();
-        project.writeAll();
-    }
-
-    @Test
-    public void testBraceStyleCanBeChanged() throws Exception
-    {
-        ActionScriptFactory factory = new ActionScriptFactory();
-        ActionScriptProject project = factory.newEmptyASProject(OUTPUT_LOCATION);
-
+        return project;
     }
 
     private static String nameAttribute(Node node)
