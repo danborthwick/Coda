@@ -5,13 +5,16 @@ import org.w3c.dom.NodeList;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.dom.*;
+import static uk.co.badgersinfoil.metaas.dom.ASConstants.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static uk.co.badgersinfoil.metaas.dom.Visibility.*;
 
 public class ExploratoryTest
 {
@@ -25,7 +28,7 @@ public class ExploratoryTest
         ActionScriptProject proj = fact.newEmptyASProject(OUTPUT_LOCATION);
         ASCompilationUnit unit = proj.newClass("Test");
         ASClassType clazz = (ASClassType) unit.getType();
-        ASMethod meth = clazz.newMethod("test", Visibility.PUBLIC, "void");
+        ASMethod meth = clazz.newMethod("test", PUBLIC, "void");
         meth.addStmt("trace('Hello world')");
         proj.writeAll();
     }
@@ -37,7 +40,7 @@ public class ExploratoryTest
         ActionScriptProject project = factory.newEmptyASProject(OUTPUT_LOCATION);
         ASCompilationUnit unit = project.newClass("MyDialogView");
         ASClassType clazz = (ASClassType) unit.getType();
-        ASMethod method = clazz.newMethod("okButton", Visibility.PUBLIC, "SceneObject");
+        ASMethod method = clazz.newMethod("okButton", PUBLIC, "SceneObject");
         method.addStmt("return _okButton");
         project.writeAll();
     }
@@ -55,26 +58,36 @@ public class ExploratoryTest
         ActionScriptFactory factory = new ActionScriptFactory();
         ActionScriptProject project = factory.newEmptyASProject(OUTPUT_LOCATION);
 
+        project.addClasspathEntry("src/main/actionscript");
         ASCompilationUnit unit = project.newClass(dialogName);
         ASClassType clazz = (ASClassType) unit.getType();
 
-        clazz.newField("_name", Visibility.PROTECTED, "string");
-        clazz.newMethod("getName", Visibility.PUBLIC, "string").addStmt("return _name");
+        clazz.newField("_name", PROTECTED, TYPE_STRING);
+        clazz.newMethod("getName", PUBLIC, TYPE_STRING).addStmt("return _name");
 
-        ASMethod constructor = clazz.newMethod(dialogName, Visibility.PUBLIC, null);
-        constructor.addParam("rootObject", "SceneObject");
+        ASMethod constructor = clazz.newMethod(dialogName, PUBLIC, null);
+        constructor.addParam("rootObject", "engine.SceneObject");
 
         NodeList buttons = document.getElementsByTagName("button");
         for (int i=0; i < buttons.getLength(); i++)
         {
             String name = nameAttribute(buttons.item(i));
             String capitalizedName = capitalize(name);
-            ASField field = clazz.newField("_so" + capitalizedName, Visibility.PROTECTED, "ButtonSceneObject");
-            clazz.newMethod("get" + capitalizedName, Visibility.PUBLIC, field.getType()).newReturn(field.getName());
+            ASField field = clazz.newField("_so" + capitalizedName, PROTECTED, "engine.ButtonSceneObject");
+            clazz.newMethod("get" + capitalizedName, PUBLIC, field.getType()).newReturn(field.getName());
             constructor.addStmt(field.getName() + " = rootObject.find(\"" + name + "\")");
         }
 
+        project.performAutoImport();
         project.writeAll();
+    }
+
+    @Test
+    public void testBraceStyleCanBeChanged() throws Exception
+    {
+        ActionScriptFactory factory = new ActionScriptFactory();
+        ActionScriptProject project = factory.newEmptyASProject(OUTPUT_LOCATION);
+
     }
 
     private static String nameAttribute(Node node)
