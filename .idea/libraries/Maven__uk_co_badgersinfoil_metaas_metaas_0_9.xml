@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/uk/co/badgersinfoil/metaas/metaas/0.9/metaas-0.9-sources.jar!/" />
+      <root url="file://$PROJECT_DIR$/libs/metaas/src/main/java" />
     </SOURCES>
   </library>
 </component>

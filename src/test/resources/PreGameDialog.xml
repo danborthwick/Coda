@@ -1,0 +1,6 @@
+<scene name="PreGameDialog">
+    <panel>
+        <button name="okButton"/>
+        <button name="cancelButton"/>
+    </panel>
+</scene>
