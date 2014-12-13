@@ -1,0 +1,3 @@
+[submodule "libs/metaas"]
+	path = libs/metaas
+	url = https://github.com/Catalysts/metaas.git
