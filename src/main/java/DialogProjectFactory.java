@@ -32,7 +32,7 @@ public class DialogProjectFactory
         ActionScriptProject project = factory.newEmptyASProject(null);
 
         project.addClasspathEntry("src/main/actionscript");
-        ASCompilationUnit unit = project.newClass(dialogName);
+        ASCompilationUnit unit = project.newClass("dialogs." + dialogName);
         ASClassType clazz = (ASClassType) unit.getType();
 
         clazz.newField("_name", PROTECTED, TYPE_STRING);

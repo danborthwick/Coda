@@ -1,7 +1,6 @@
 package cpp;
 
 import uk.co.badgersinfoil.metaas.ActionScriptWriter;
-import uk.co.badgersinfoil.metaas.dom.ASClassType;
 import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
 import uk.co.badgersinfoil.metaas.impl.ASTPrinter;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
@@ -20,8 +19,7 @@ public class CppWriter implements ActionScriptWriter
 
     public void write(Writer writer, ASCompilationUnit cu) throws IOException
     {
-        ASClassType clazz = (ASClassType) cu.getType();
-        LinkedListTree ast = astGenerator.forClass(clazz);
+        LinkedListTree ast = astGenerator.forUnit(cu);
         new ASTPrinter(writer).print(ast);
     }
 }
