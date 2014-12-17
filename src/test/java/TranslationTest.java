@@ -1,11 +1,13 @@
 import cpp.CppASTGenerator;
 import cpp.CppFactory;
+import cpp.CppProject;
 import multi.MultiLanguageProject;
 import org.junit.Test;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptParser;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
+import uk.co.badgersinfoil.metaas.impl.ASTActionScriptProject;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -33,7 +35,8 @@ public class TranslationTest
         ActionScriptFactory fact = new CppFactory();
         ASCompilationUnit asUnit = parseMyClass(fact.newParser());
 
-        ActionScriptProject proj = new MultiLanguageProject(ExploratoryTest.OUTPUT_LOCATION + "/translate", fact);
+        ActionScriptProject proj = new CppProject(fact);
+        proj.setOutputLocation(ExploratoryTest.OUTPUT_LOCATION + "/translate");
         ASCompilationUnit cppUnit = new CppASTGenerator().translateCompilationUnit(asUnit);
         proj.addCompilationUnit(cppUnit);
         proj.writeAll();

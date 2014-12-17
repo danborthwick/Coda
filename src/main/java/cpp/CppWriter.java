@@ -10,16 +10,8 @@ import java.io.Writer;
 
 public class CppWriter implements ActionScriptWriter
 {
-    private CppASTGenerator astGenerator;
-
-    public CppWriter(CppASTGenerator astGenerator)
-    {
-        this.astGenerator = astGenerator;
-    }
-
     public void write(Writer writer, ASCompilationUnit cu) throws IOException
     {
-        LinkedListTree ast = astGenerator.astForUnit(cu);
-        new ASTPrinter(writer).print(ast);
+        new ASTPrinter(writer).print(((CppASTCompilationUnit)cu).getAST());
     }
 }

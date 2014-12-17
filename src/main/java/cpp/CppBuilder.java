@@ -1,11 +1,14 @@
 package cpp;
 
 import org.asdt.core.internal.antlr.AS3Parser;
-import uk.co.badgersinfoil.metaas.impl.*;
+import uk.co.badgersinfoil.metaas.SyntaxException;
+import uk.co.badgersinfoil.metaas.dom.Visibility;
+import uk.co.badgersinfoil.metaas.impl.AS3ASTCompilationUnit;
+import uk.co.badgersinfoil.metaas.impl.AS3FragmentParser;
+import uk.co.badgersinfoil.metaas.impl.ASTUtils;
+import uk.co.badgersinfoil.metaas.impl.TokenBuilder;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListToken;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
-
-import static cpp.CppParser.NAMESPACE;
 
 public class CppBuilder
 {
@@ -26,7 +29,7 @@ public class CppBuilder
 
         LinkedListTree clazz = synthesizeCppClass(className);
         ASTUtils.addChildWithIndentation(packageBlock, clazz);
-        return new AS3ASTCompilationUnit(unit);
+        return new CppASTCompilationUnit(unit, this);
     }
 
     private LinkedListTree synthesizeCppClass(String className) {
@@ -57,6 +60,22 @@ public class CppBuilder
         ast.getInitialInsertionAfter().afterInsert(nl);
         ast.setInitialInsertionAfter(nl);
         return ast;
+    }
+
+    public ASTCppField newField(String name, Visibility visibility, String type)
+    {
+        if (name.indexOf('.') != -1) {
+            throw new SyntaxException("field name must not contain '.'");
+        }
+        LinkedListTree decl = ASTUtils.newImaginaryAST(AS3Parser.VAR_DEF);
+        decl.addChildWithTokens(ModifierUtils.toModifiers(visibility));
+        decl.appendToken(TokenBuilder.newSpace());
+        decl.appendToken(new LinkedListToken(AS3Parser.IDENT, type));
+        decl.appendToken(TokenBuilder.newSpace());
+        decl.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
+        decl.appendToken(TokenBuilder.newSemi());
+        return new ASTCppField(decl);
+
     }
 
     private static String typeNameFrom(String qualifiedName) {

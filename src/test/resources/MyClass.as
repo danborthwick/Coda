@@ -13,5 +13,10 @@ package mypackage
         {
             return _value;
         }
+
+        public function doubledValue() : int
+        {
+            return 2 * getValue();
+        }
     }
 }

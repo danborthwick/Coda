@@ -1,18 +1,7 @@
 package cpp;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
-import org.antlr.runtime.tree.BaseTree;
-import org.antlr.runtime.tree.Tree;
-import org.asdt.core.internal.antlr.AS3Parser;
-import uk.co.badgersinfoil.metaas.dom.ASClassType;
-import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
-import uk.co.badgersinfoil.metaas.dom.ASField;
-import uk.co.badgersinfoil.metaas.dom.ASType;
-import uk.co.badgersinfoil.metaas.impl.AS3ASTCompilationUnit;
+import uk.co.badgersinfoil.metaas.dom.*;
 import uk.co.badgersinfoil.metaas.impl.ASTASClassType;
-import uk.co.badgersinfoil.metaas.impl.ASTActionScriptParser;
-import uk.co.badgersinfoil.metaas.impl.TokenBuilder;
-import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListToken;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTreeAdaptor;
 
@@ -53,11 +42,19 @@ public class CppASTGenerator
         String packageName = unit.getPackageName();
         String qualifiedClassName = ((packageName == null) ? "" : (packageName + ".")) + asClass.getName();
         ASCompilationUnit cppUnit = factory.newClass(qualifiedClassName);
-        ASTASClassType cppClass = (ASTASClassType) cppUnit.getType();
+        ASTASClassType cppClass = (ASTCppClassType) cppUnit.getType();
 
         for (ASField asField : (List<ASField>) asClass.getFields()) {
             cppClass.newField(asField.getName(), asField.getVisibility(), asField.getType());
         }
+
+        for (ASMethod asMethod : (List<ASMethod>) asClass.getMethods()) {
+            ASMethod cppMethod = cppClass.newMethod(asMethod.getName(), asMethod.getVisibility(), asMethod.getType());
+            for (Statement asStatement : (List<Statement>) asMethod.getStatementList()) {
+                cppMethod.addStmt(asStatement.toString());
+            }
+        }
+
         return cppUnit;
     }
 
