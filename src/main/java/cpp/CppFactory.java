@@ -12,6 +12,11 @@ public class CppFactory extends ActionScriptFactory
         this.builder = builder;
     }
 
+    public CppFactory()
+    {
+        this(new CppBuilder());
+    }
+
     @Override
     public ASCompilationUnit newClass(String qualifiedClassName)
     {

@@ -41,7 +41,13 @@ public class CppASTGenerator
         this(new CppBuilder());
     }
 
-    public LinkedListTree forUnit(ASCompilationUnit unit)
+    public LinkedListTree astForUnit(ASCompilationUnit unit)
+    {
+        ASCompilationUnit cppUnit = translateCompilationUnit(unit);
+        return ((ASTASClassType) cppUnit.getType()).getAST();
+    }
+
+    public ASCompilationUnit translateCompilationUnit(ASCompilationUnit unit)
     {
         ASTASClassType asClass = (ASTASClassType) unit.getType();
         String packageName = unit.getPackageName();
@@ -52,8 +58,7 @@ public class CppASTGenerator
         for (ASField asField : (List<ASField>) asClass.getFields()) {
             cppClass.newField(asField.getName(), asField.getVisibility(), asField.getType());
         }
-
-        return cppClass.getAST();
+        return cppUnit;
     }
 
     private static String typeNameFrom(String qualifiedName) {

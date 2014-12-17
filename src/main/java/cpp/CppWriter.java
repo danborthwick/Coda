@@ -19,7 +19,7 @@ public class CppWriter implements ActionScriptWriter
 
     public void write(Writer writer, ASCompilationUnit cu) throws IOException
     {
-        LinkedListTree ast = astGenerator.forUnit(cu);
+        LinkedListTree ast = astGenerator.astForUnit(cu);
         new ASTPrinter(writer).print(ast);
     }
 }
