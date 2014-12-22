@@ -1,10 +1,9 @@
 package cpp;
 
 import uk.co.badgersinfoil.metaas.dom.ASField;
+import uk.co.badgersinfoil.metaas.dom.ASMethod;
 import uk.co.badgersinfoil.metaas.dom.Visibility;
-import uk.co.badgersinfoil.metaas.impl.ASTASClassType;
-import uk.co.badgersinfoil.metaas.impl.ASTASField;
-import uk.co.badgersinfoil.metaas.impl.ASTUtils;
+import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
 public class ASTCppClassType extends ASTASClassType
@@ -15,6 +14,13 @@ public class ASTCppClassType extends ASTASClassType
     {
         super(clazz);
         this.builder = builder;
+    }
+
+    @Override
+    public ASMethod newMethod(String name, Visibility visibility, String returnType) {
+        ASTASMethod method = builder.newClassMethod(name, visibility, returnType);
+        addMethod(method);
+        return method;
     }
 
     @Override

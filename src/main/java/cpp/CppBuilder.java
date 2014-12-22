@@ -3,10 +3,7 @@ package cpp;
 import org.asdt.core.internal.antlr.AS3Parser;
 import uk.co.badgersinfoil.metaas.SyntaxException;
 import uk.co.badgersinfoil.metaas.dom.Visibility;
-import uk.co.badgersinfoil.metaas.impl.AS3ASTCompilationUnit;
-import uk.co.badgersinfoil.metaas.impl.AS3FragmentParser;
-import uk.co.badgersinfoil.metaas.impl.ASTUtils;
-import uk.co.badgersinfoil.metaas.impl.TokenBuilder;
+import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListToken;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
@@ -92,5 +89,25 @@ public class CppBuilder
             return null;
         }
         return qualifiedName.substring(0, p).replace(".", "::");
+    }
+
+    public ASTASMethod newClassMethod(String name, Visibility visibility, String returnType)
+    {
+        LinkedListTree def = ASTUtils.newImaginaryAST(AS3Parser.METHOD_DEF);
+        def.addChildWithTokens(ModifierUtils.toModifiers(visibility));
+        def.appendToken(TokenBuilder.newSpace());
+        if (returnType != null) {   // Should just be for constructors, may need to handle typeless functions
+            def.appendToken(new LinkedListToken(AS3Parser.IDENT, returnType));
+            def.appendToken(TokenBuilder.newSpace());
+        }
+        LinkedListTree methName = ASTUtils.newAST(AS3Parser.IDENT, name);
+        def.addChildWithTokens(methName);
+        def.addChildWithTokens(ASTUtils.newParentheticAST(AS3Parser.PARAMS, AS3Parser.LPAREN, "(", AS3Parser.RPAREN, ")"));
+        def.appendToken(TokenBuilder.newSpace());
+        LinkedListTree block = newBlock();
+        def.addChildWithTokens(block);
+
+        return new ASTASMethod(def);
+
     }
 }
