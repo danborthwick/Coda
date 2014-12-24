@@ -1,6 +1,5 @@
 package scenes;
 
-import cpp.ASTCppField;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -10,10 +9,7 @@ import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
 import uk.co.badgersinfoil.metaas.dom.ASField;
 import uk.co.badgersinfoil.metaas.dom.ASMethod;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PROTECTED;
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PUBLIC;
@@ -31,26 +27,34 @@ public class SceneClassGenerator {
         ASCompilationUnit unit = project.newClass(className);
         ASClassType clazz = (ASClassType) unit.getType();
 
-        ASMethod constructor = clazz.newMethod(clazz.getName(), PUBLIC, null);
-        constructor.addParam("rootObject", SCENE_OBJECT_QNAME);
-
-        List<String> names = namedNodeNamesFromScene(document);
+        Collection<String> names = namedNodeNamesFromScene(document);
         Map<String, ASField> fieldByName = new HashMap<String, ASField>();
 
         for (String name : names) {
-            ASField field = addField(clazz, name, constructor);
+            ASField field = addField(clazz, name);
             fieldByName.put(name, field);
         }
 
+        ASMethod constructor = clazz.newMethod(clazz.getName(), PUBLIC, null);
+        constructor.addParam("rootObject", SCENE_OBJECT_QNAME);
+
         for (String name : names) {
-            addGetMethod(clazz, name, fieldByName.get(name));
+            ASField field = fieldByName.get(name);
+            addGetMethod(clazz, name, field);
+            addInitialisationStatement(constructor, name, field);
         }
     }
 
-    private List<String> namedNodeNamesFromScene(Document document) {
+    private void addInitialisationStatement(ASMethod constructor, String nodeName, ASField field) {
+        constructor.addStmt(field.getName() + " = rootObject.find(\"" + nodeName + "\")");
+    }
+
+    private Collection<String> namedNodeNamesFromScene(Document document) {
         // Use XPath or similar to find named nodes?
         NodeList sceneObjects = document.getElementsByTagName("SceneObject");
-        List<String> names = new ArrayList<String>();
+        // LinkedHashSet to avoid duplicates but maintain order
+        Set<String> names = new LinkedHashSet<String>();
+
         for (int i=0; i < sceneObjects.getLength(); i++)
         {
             Node sceneObject = sceneObjects.item(i);
@@ -63,15 +67,13 @@ public class SceneClassGenerator {
         return names;
     }
 
-    private ASField addField(ASClassType clazz, String name, ASMethod constructor) {
-        String capitalizedName = capitalize(name);
-        ASField field = clazz.newField("_so" + capitalizedName, PROTECTED, SCENE_OBJECT_QNAME);
-        constructor.addStmt(field.getName() + " = rootObject.find(\"" + name + "\")");
-        return field;
+    private ASField addField(ASClassType clazz, String name) {
+        return clazz.newField("_so" + capitalize(name), PROTECTED, SCENE_OBJECT_QNAME);
     }
 
     private void addGetMethod(ASClassType clazz, String name, ASField field) {
-        clazz.newMethod("get" + capitalize(name), PUBLIC, field.getType()).newReturn(field.getName());
+        ASMethod method = clazz.newMethod("get" + capitalize(name), PUBLIC, field.getType());
+        method.newReturn(field.getName());
     }
 
     private static String nameAttribute(Node node)
