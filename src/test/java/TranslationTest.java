@@ -1,13 +1,11 @@
 import cpp.CppASTGenerator;
 import cpp.CppFactory;
 import cpp.CppProject;
-import multi.MultiLanguageProject;
 import org.junit.Test;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptParser;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
-import uk.co.badgersinfoil.metaas.impl.ASTActionScriptProject;
 
 import java.io.InputStreamReader;
 import java.io.Reader;

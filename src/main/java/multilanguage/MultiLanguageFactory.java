@@ -1,4 +1,4 @@
-package multi;
+package multilanguage;
 
 import cpp.CppASTGenerator;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;

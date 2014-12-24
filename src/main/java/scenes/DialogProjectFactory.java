@@ -1,3 +1,5 @@
+package scenes;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -16,11 +18,14 @@ import static uk.co.badgersinfoil.metaas.dom.ASConstants.TYPE_STRING;
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PROTECTED;
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PUBLIC;
 
+/**
+ * Exploratory test for dialog generation
+ */
 public class DialogProjectFactory
 {
     public ActionScriptProject build(ActionScriptFactory factory) throws Exception
     {
-        InputStream stream = getClass().getResourceAsStream("PreGameDialog.xml");
+        InputStream stream = getClass().getResourceAsStream("../PreGameDialog.xml");
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(stream);
         Node scene = document.getElementsByTagName("scene").item(0);

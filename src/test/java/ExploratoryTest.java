@@ -1,4 +1,5 @@
 import org.junit.Test;
+import scenes.DialogProjectFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.ActionScriptWriter;

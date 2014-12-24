@@ -1,18 +1,14 @@
-package multi;
+package multilanguage;
 
 import cpp.CppASTGenerator;
 import cpp.CppProject;
-import cpp.CppWriter;
 import uk.co.badgersinfoil.metaas.ActionScriptFactory;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
 import uk.co.badgersinfoil.metaas.impl.ASTActionScriptProject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Iterator;
 import java.util.List;
 
 public class MultiLanguageProject extends ASTActionScriptProject

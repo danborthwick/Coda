@@ -1,0 +1,107 @@
+
+<Scene>
+	<SceneObject __editorVisibility="true" __visibility="0" name="MapContentRoot">
+		<SceneObject __editorVisibility="true" __visibility="0" name="MapView">
+			<Sprite filename="tex/map/map2.png">
+				<Pivot anchor="center"/>
+				<Scale x="1.18" y="1.18"/>
+			</Sprite>
+			<SceneObject name="ChallengeButton">
+			<Translation x="252.923" y="411.302" z="1"/>
+			<Scale x="0.4" y="0.4"/>
+			<Sprite filename="tex/ui/challenge_icon.png">
+				<Pivot anchor="center"/>
+			</Sprite>
+      <Animations>
+			<Animation animationData="Darken"/>
+			<Animation animationData="Throb"/>
+      </Animations>
+     		</SceneObject>
+			<SceneObject __editorVisibility="true" __visibility="0" name="EpisodeRoot">
+				<SceneObject __editorVisibility="true" __visibility="0" name="entity">
+					<SceneObject __editorVisibility="true" __visibility="0" name="edge"/>
+					<SceneObject __editorVisibility="true" __visibility="0" name="map"/>
+					<SceneObject __editorVisibility="true" __visibility="0" name="Stations">
+						<Translation z="5"/>
+						<Scale x="0.5" y="0.5"/>
+						<SceneObject name="station001">
+							<Translation x="291.231" y="1230.4" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject name="station002">
+							<Translation x="381.868" y="955.333" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject name="station003">
+							<Translation x="214.875" y="757.338" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject name="station004">
+							<Translation x="19.1724" y="655.114" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station005">
+							<Translation x="-115.728" y="498.266" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station006">
+							<Translation x="-115.187" y="287.433" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station007">
+							<Translation x="95.2401" y="137.122" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station008">
+							<Translation x="326.945" y="55.4973" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station009">
+							<Translation x="512.172" y="-102.451" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station010">
+							<Translation x="465.213" y="-321.25" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station011">
+							<Translation x="240.24" y="-421.805" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station012">
+							<Translation x="-22.7225" y="-491.531" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station013">
+							<Translation x="-151.571" y="-674.171" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station014">
+							<Translation x="135.343" y="-858.472" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station015">
+							<Translation x="366.614" y="-971.221" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+						<SceneObject __editorVisibility="true" __visibility="0" name="station016">
+							<Translation x="506.949" y="-1108.89" z="1"/>
+							<Import filename="scenes/map_level_banner_marker.xml"/>
+						</SceneObject>
+					</SceneObject>
+				</SceneObject>
+				<SceneObject __editorVisibility="true" __visibility="0" name="entity">
+					<Translation x="0.000244141" y="2.3667" z="0"/>
+				</SceneObject>
+			</SceneObject>
+		</SceneObject>
+		<SceneObject __editorVisibility="true" __visibility="0" name="MenuButton">
+			<Animation animationData="OnPress" loopCount="0" name="OnPress" speed="1"/>
+			<Animation animationData="OnRelease" loopCount="0" name="OnRelease" speed="1"/>
+			<Sprite filename="tex/ui/menu_btn.png" vertexColors="true">
+				<Pivot anchor="center"/>
+			</Sprite>
+		</SceneObject>
+		
+	</SceneObject>
+</Scene>
