@@ -53,8 +53,8 @@ public class ModifierUtils
         return result;
     }
 
-    public static LinkedListTree toModifiers(Visibility visibility) {
-        if (Visibility.DEFAULT.equals(visibility)) {
+    public static LinkedListTree toModifiers(Visibility visibility, Visibility scopeVisibility) {
+        if (visibility.equals(scopeVisibility)) {
             return ASTUtils.newPlaceholderAST(AS3Parser.MODIFIERS);
         }
         LinkedListTree modifiers = ASTUtils.newImaginaryAST(AS3Parser.MODIFIERS);
@@ -62,6 +62,7 @@ public class ModifierUtils
         LinkedListTree mod = ASTUtils.newAST(modInfo.tokenType, modInfo.keyword);
         mod.appendToken(TokenBuilder.newSpace());
         modifiers.addChildWithTokens(mod);
+        mod.appendToken(TokenBuilder.newNewline());
         return modifiers;
     }
 

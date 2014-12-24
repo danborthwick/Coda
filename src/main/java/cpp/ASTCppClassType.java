@@ -9,11 +9,13 @@ import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 public class ASTCppClassType extends ASTASClassType
 {
     private CppBuilder builder;
+    private Visibility currentVisibility;
 
     public ASTCppClassType(LinkedListTree clazz, CppBuilder builder)
     {
         super(clazz);
         this.builder = builder;
+        this.currentVisibility = null;
     }
 
     @Override

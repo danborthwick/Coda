@@ -9,7 +9,10 @@ import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
 public class CppBuilder
 {
+    private Visibility scopeVisibility = Visibility.DEFAULT;
+
     public AS3ASTCompilationUnit synthesizeClass(String qualifiedName) {
+        scopeVisibility = Visibility.DEFAULT;
         LinkedListTree unit = ASTUtils.newImaginaryAST(AS3Parser.COMPILATION_UNIT);
         LinkedListTree pkg = ASTUtils.newAST(AS3Parser.PACKAGE, "namespace");
         pkg.appendToken(TokenBuilder.newSpace());
@@ -65,7 +68,8 @@ public class CppBuilder
             throw new SyntaxException("field name must not contain '.'");
         }
         LinkedListTree decl = ASTUtils.newImaginaryAST(AS3Parser.VAR_DEF);
-        decl.addChildWithTokens(ModifierUtils.toModifiers(visibility));
+        decl.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
+        scopeVisibility = visibility;
         decl.appendToken(TokenBuilder.newSpace());
         decl.appendToken(new LinkedListToken(AS3Parser.IDENT, type));
         decl.appendToken(TokenBuilder.newSpace());
@@ -94,8 +98,9 @@ public class CppBuilder
     public ASTASMethod newClassMethod(String name, Visibility visibility, String returnType)
     {
         LinkedListTree def = ASTUtils.newImaginaryAST(AS3Parser.METHOD_DEF);
-        def.addChildWithTokens(ModifierUtils.toModifiers(visibility));
-        def.appendToken(TokenBuilder.newSpace());
+        def.appendToken(TokenBuilder.newNewline());
+        def.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
+        scopeVisibility = visibility;
         if (returnType != null) {   // Should just be for constructors, may need to handle typeless functions
             def.appendToken(new LinkedListToken(AS3Parser.IDENT, returnType));
             def.appendToken(TokenBuilder.newSpace());
