@@ -12,8 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static uk.co.badgersinfoil.metaas.dom.ASConstants.TYPE_STRING;
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PROTECTED;
 import static uk.co.badgersinfoil.metaas.dom.Visibility.PUBLIC;
@@ -27,7 +25,6 @@ public class DialogProjectFactory
         Document document = builder.parse(stream);
         Node scene = document.getElementsByTagName("scene").item(0);
         String dialogName = capitalize(nameAttribute(scene));
-        assertThat(dialogName, equalTo("PreGameDialog"));
 
         ActionScriptProject project = factory.newEmptyASProject(null);
 

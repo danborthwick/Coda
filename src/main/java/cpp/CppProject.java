@@ -29,6 +29,7 @@ public class CppProject extends ASTActionScriptProject
     }
 
     @Override
+    @SuppressWarnings("unchecked")  // List cast
     public void writeAll() throws IOException
     {
         for (ASCompilationUnit cu : (List<ASCompilationUnit>) getCompilationUnits()) {

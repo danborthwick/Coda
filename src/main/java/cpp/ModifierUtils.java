@@ -24,8 +24,8 @@ public class ModifierUtils
     }
 
 
-    private static Map modinfoByTokenType = new HashMap();
-    private static Map modinfoByVisibility = new HashMap();
+    private static Map<Integer, ModInfo> modinfoByTokenType = new HashMap<Integer, ModInfo>();
+    private static Map<Visibility, ModInfo> modinfoByVisibility = new HashMap<Visibility, ModInfo>();
 
     static {
         mapMod(AS3Parser.PRIVATE, Visibility.PRIVATE, "private:");
