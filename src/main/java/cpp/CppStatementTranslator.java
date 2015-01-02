@@ -1,10 +1,7 @@
 package cpp;
 
 import uk.co.badgersinfoil.metaas.dom.Statement;
-import uk.co.badgersinfoil.metaas.impl.ASTASDeclarationStatement;
-import uk.co.badgersinfoil.metaas.impl.ASTBuilder;
-import uk.co.badgersinfoil.metaas.impl.ASTExpression;
-import uk.co.badgersinfoil.metaas.impl.ASTScriptElement;
+import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
 import java.util.HashMap;
@@ -32,6 +29,10 @@ public class CppStatementTranslator {
         public CppStatement toCpp(ASTScriptElement asStatement);
     }
 
+    /**
+     * Does no translation, just duplicates the input statement.
+     * Of use when AS and Cpp syntax is the same.
+     */
     class PassthroughTranslator implements StatementTranslator {
         @Override
         public CppStatement toCpp(ASTScriptElement asStatement) {

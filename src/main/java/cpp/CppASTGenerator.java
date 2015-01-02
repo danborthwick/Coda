@@ -42,6 +42,10 @@ public class CppASTGenerator
         for (ASMethod asMethod : (List<ASMethod>) asClass.getMethods()) {
             ASTCppMethod cppMethod = (ASTCppMethod) cppClass.newMethod(asMethod.getName(), asMethod.getVisibility(), asMethod.getType());
 
+            for (ASTASArg argument : (List<ASTASArg>) asMethod.getArgs()) {
+                cppMethod.addParam(argument.getName(), argument.getType());
+            }
+
             for (ASTScriptElement asStatement : (List<ASTScriptElement>) asMethod.getStatementList()) {
                 Statement cppStatement = cppStatementTranslator.translateStatement(asStatement);
                 cppMethod.addStatement(cppStatement);

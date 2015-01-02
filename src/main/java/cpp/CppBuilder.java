@@ -72,7 +72,7 @@ public class CppBuilder
         decl.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
         scopeVisibility = visibility;
         decl.appendToken(TokenBuilder.newSpace());
-        decl.appendToken(new LinkedListToken(AS3Parser.IDENT, types.translate(type)));
+        decl.appendToken(translatedType(type));
         decl.appendToken(TokenBuilder.newSpace());
         decl.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
         decl.appendToken(TokenBuilder.newSemi());
@@ -103,7 +103,7 @@ public class CppBuilder
         def.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
         scopeVisibility = visibility;
         if (returnType != null) {   // Should just be for constructors, may need to handle typeless functions
-            def.appendToken(new LinkedListToken(AS3Parser.IDENT, types.translate(returnType)));
+            def.appendToken(translatedType(returnType));
             def.appendToken(TokenBuilder.newSpace());
         }
         LinkedListTree methName = ASTUtils.newAST(AS3Parser.IDENT, name);
@@ -113,11 +113,11 @@ public class CppBuilder
         LinkedListTree block = newBlock();
         def.addChildWithTokens(block);
 
-        return new ASTCppMethod(def);
+        return new ASTCppMethod(def, this);
     }
 
     public CppStatement newDeclaration(String type, String name, ASTExpression initializer) {
-        LinkedListTree ast = ASTUtils.newAST(new LinkedListToken(AS3Parser.IDENT, types.translate(type)));
+        LinkedListTree ast = ASTUtils.newAST(translatedType(type));
 
         ast.appendToken(TokenBuilder.newSpace());
         ast.appendToken(new LinkedListToken(AS3Parser.IDENT, name));
@@ -129,5 +129,17 @@ public class CppBuilder
 
         return new CppStatement(ast);
 
+    }
+
+    private LinkedListToken translatedType(String type) {
+        return TokenBuilder.newToken(AS3Parser.TYPE_NAME, types.translate(type));
+    }
+
+    public ASTASArg newParam(String name, String type) {
+        LinkedListTree param = ASTUtils.newPlaceholderAST(AS3Parser.PARAM);
+        param.addChildWithTokens(ASTUtils.newAST(translatedType(type)));
+        param.appendToken(TokenBuilder.newSpace());
+        param.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
+        return new ASTASArg(param);
     }
 }
