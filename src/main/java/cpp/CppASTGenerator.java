@@ -27,13 +27,18 @@ public class CppASTGenerator
     }
 
     @SuppressWarnings("unchecked")
-    public ASCompilationUnit translateCompilationUnit(ASCompilationUnit unit)
+    public ASCompilationUnit translateCompilationUnit(ASCompilationUnit asUnit)
     {
-        ASTASClassType asClass = (ASTASClassType) unit.getType();
-        String packageName = unit.getPackageName();
+        ASTASClassType asClass = (ASTASClassType) asUnit.getType();
+        String packageName = asUnit.getPackageName();
         String qualifiedClassName = ((packageName == null) ? "" : (packageName + ".")) + asClass.getName();
         ASCompilationUnit cppUnit = factory.newClass(qualifiedClassName);
         ASTASClassType cppClass = (ASTCppClassType) cppUnit.getType();
+
+        for (String importName : (List<String>)asUnit.getPackage().findImports())
+        {
+            cppUnit.getPackage().addImport(importName);
+        }
 
         for (ASField asField : (List<ASField>) asClass.getFields()) {
             cppClass.newField(asField.getName(), asField.getVisibility(), asField.getType());

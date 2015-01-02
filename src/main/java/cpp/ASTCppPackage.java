@@ -3,10 +3,7 @@ package cpp;
 import org.asdt.core.internal.antlr.AS3Parser;
 import uk.co.badgersinfoil.metaas.dom.ASPackage;
 import uk.co.badgersinfoil.metaas.dom.ASType;
-import uk.co.badgersinfoil.metaas.impl.ASTASClassType;
-import uk.co.badgersinfoil.metaas.impl.ASTASInterfaceType;
-import uk.co.badgersinfoil.metaas.impl.ASTASPackage;
-import uk.co.badgersinfoil.metaas.impl.ASTUtils;
+import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
 public class ASTCppPackage extends ASTASPackage
@@ -33,4 +30,31 @@ public class ASTCppPackage extends ASTASPackage
         }
         return null;
     }
+
+    @Override
+    public void addImport(String name) {
+        String importPath = name.replace(".", "/");
+        LinkedListTree importAST = ASTUtils.newAST(AS3Parser.IMPORT, "#include \"" + importPath + "\";");
+        int pos = findNextImportInsertionPoint();
+        ASTUtils.addChildWithIndentation(getPkgBlockNode(), pos, importAST);
+    }
+
+    private int findNextImportInsertionPoint() {
+        ASTIterator i = getPkgBlockIter();
+        int index = 0;
+        while (i.search(AS3Parser.IMPORT) != null) {
+            index = i.getCurrentIndex() + 1;
+        }
+        return index;
+    }
+
+    private LinkedListTree getPkgBlockNode() {
+        LinkedListTree block = ASTUtils.findChildByType(ast, AS3Parser.BLOCK);
+        return block;
+    }
+
+    private ASTIterator getPkgBlockIter() {
+        return new ASTIterator(getPkgBlockNode());
+    }
+
 }
