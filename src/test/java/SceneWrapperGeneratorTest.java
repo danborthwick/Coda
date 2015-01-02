@@ -1,10 +1,13 @@
 import junit.framework.TestCase;
 import multilanguage.MultiLanguageFactory;
+import org.junit.Ignore;
+import org.junit.Test;
 import scenes.SceneWrapperGenerator;
 import uk.co.badgersinfoil.metaas.ActionScriptProject;
 
 import java.io.File;
 
+@Ignore
 public class SceneWrapperGeneratorTest extends TestCase {
 
     public void testGenerationDoesNotFail() throws Exception {

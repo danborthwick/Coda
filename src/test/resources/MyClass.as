@@ -18,5 +18,11 @@ package mypackage
         {
             return 2 * getValue();
         }
+
+        public function hypotenuseLength(sideALength : Number, sideBLength : Number) : Number
+        {
+            var hypotenuseSquared : Number = (sideALength * sideALength) + (sideBLength * sideBLength);
+            return Math.sqrt(hypotenuseSquared);
+        }
     }
 }
