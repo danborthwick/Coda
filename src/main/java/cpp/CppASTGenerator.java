@@ -1,28 +1,19 @@
 package cpp;
 
 import uk.co.badgersinfoil.metaas.dom.*;
-import uk.co.badgersinfoil.metaas.impl.ASTASClassType;
-import uk.co.badgersinfoil.metaas.impl.ASTASDeclarationStatement;
-import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
-import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTreeAdaptor;
+import uk.co.badgersinfoil.metaas.impl.*;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CppASTGenerator
 {
-    private CppBuilder builder;
     private CppFactory factory;
-
-    private static final LinkedListTreeAdaptor TREE_ADAPTOR = new LinkedListTreeAdaptor();
-    private CppTypeTranslator types;
+    private CppStatementTranslator cppStatementTranslator;
 
     public CppASTGenerator(CppBuilder builder, CppFactory factory)
     {
-        this.builder = builder;
         this.factory = factory;
+        this.cppStatementTranslator = new CppStatementTranslator(builder);
     }
 
     public CppASTGenerator(CppBuilder builder)
@@ -35,12 +26,7 @@ public class CppASTGenerator
         this(new CppBuilder());
     }
 
-    public LinkedListTree astForUnit(ASCompilationUnit unit)
-    {
-        ASCompilationUnit cppUnit = translateCompilationUnit(unit);
-        return ((ASTASClassType) cppUnit.getType()).getAST();
-    }
-
+    @SuppressWarnings("unchecked")
     public ASCompilationUnit translateCompilationUnit(ASCompilationUnit unit)
     {
         ASTASClassType asClass = (ASTASClassType) unit.getType();
@@ -54,43 +40,14 @@ public class CppASTGenerator
         }
 
         for (ASMethod asMethod : (List<ASMethod>) asClass.getMethods()) {
-            ASMethod cppMethod = cppClass.newMethod(asMethod.getName(), asMethod.getVisibility(), asMethod.getType());
-            for (Statement asStatement : (List<Statement>) asMethod.getStatementList()) {
-                Statement cppStatement = translateStatement(asStatement);
-                cppMethod.addStmt(cppStatement.toString());
+            ASTCppMethod cppMethod = (ASTCppMethod) cppClass.newMethod(asMethod.getName(), asMethod.getVisibility(), asMethod.getType());
+
+            for (ASTScriptElement asStatement : (List<ASTScriptElement>) asMethod.getStatementList()) {
+                Statement cppStatement = cppStatementTranslator.translateStatement(asStatement);
+                cppMethod.addStatement(cppStatement);
             }
         }
 
         return cppUnit;
-    }
-
-    private Statement translateStatement(Statement asStatement)
-    {
-        Map<Class<? extends Statement>, Method> translators = new HashMap<>();
-        Statement cppStatement = asStatement;
-        try {
-            translators.put(ASDeclarationStatement.class, getClass().getMethod("translateDeclarationStatement"));
-            Method method = translators.get(asStatement.getClass());
-            if (method != null) {
-                cppStatement = (Statement) method.invoke(this, asStatement);
-            }
-        }
-        catch (Exception e) {
-        }
-
-        return cppStatement;
-    }
-
-    public Statement translateDeclarationStatement(ASTASDeclarationStatement asStatement)
-    {
-        String cppType = types.translate(asStatement.getFirstVarTypeName());
-    }
-
-    private static String typeNameFrom(String qualifiedName) {
-        int p = qualifiedName.lastIndexOf('.');
-        if (p == -1) {
-            return qualifiedName;
-        }
-        return qualifiedName.substring(p+1);
     }
 }

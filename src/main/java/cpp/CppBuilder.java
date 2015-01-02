@@ -9,7 +9,8 @@ import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
 public class CppBuilder
 {
-    private Visibility scopeVisibility = Visibility.DEFAULT;
+    protected Visibility scopeVisibility = Visibility.DEFAULT;
+    protected CppTypeTranslator types = new CppTypeTranslator();
 
     public AS3ASTCompilationUnit synthesizeClass(String qualifiedName) {
         scopeVisibility = Visibility.DEFAULT;
@@ -71,7 +72,7 @@ public class CppBuilder
         decl.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
         scopeVisibility = visibility;
         decl.appendToken(TokenBuilder.newSpace());
-        decl.appendToken(new LinkedListToken(AS3Parser.IDENT, type));
+        decl.appendToken(new LinkedListToken(AS3Parser.IDENT, types.translate(type)));
         decl.appendToken(TokenBuilder.newSpace());
         decl.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
         decl.appendToken(TokenBuilder.newSemi());
@@ -102,7 +103,7 @@ public class CppBuilder
         def.addChildWithTokens(ModifierUtils.toModifiers(visibility, scopeVisibility));
         scopeVisibility = visibility;
         if (returnType != null) {   // Should just be for constructors, may need to handle typeless functions
-            def.appendToken(new LinkedListToken(AS3Parser.IDENT, returnType));
+            def.appendToken(new LinkedListToken(AS3Parser.IDENT, types.translate(returnType)));
             def.appendToken(TokenBuilder.newSpace());
         }
         LinkedListTree methName = ASTUtils.newAST(AS3Parser.IDENT, name);
@@ -112,7 +113,21 @@ public class CppBuilder
         LinkedListTree block = newBlock();
         def.addChildWithTokens(block);
 
-        return new ASTASMethod(def);
+        return new ASTCppMethod(def);
+    }
+
+    public CppStatement newDeclaration(String type, String name, ASTExpression initializer) {
+        LinkedListTree ast = ASTUtils.newAST(new LinkedListToken(AS3Parser.IDENT, types.translate(type)));
+
+        ast.appendToken(TokenBuilder.newSpace());
+        ast.appendToken(new LinkedListToken(AS3Parser.IDENT, name));
+        ast.appendToken(TokenBuilder.newSpace());
+        ast.appendToken(TokenBuilder.newAssign());
+        ast.appendToken(TokenBuilder.newSpace());
+        ast.addChildWithTokens(initializer.getAST());
+        ast.appendToken(TokenBuilder.newSemi());
+
+        return new CppStatement(ast);
 
     }
 }

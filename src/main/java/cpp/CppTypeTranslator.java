@@ -1,17 +1,21 @@
 package cpp;
 
-import sun.tools.java.Type;
 import uk.co.badgersinfoil.metaas.dom.ASConstants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CppTypeTranslator
 {
+    public static final Map<String, String> typeMap;
+    static {
+        typeMap = new HashMap<>();
+        typeMap.put(ASConstants.TYPE_NUMBER, "double");
+        typeMap.put(ASConstants.TYPE_STRING, "std::string");
+    }
+
     public String translate(String asType)
     {
-        String cppType = asType;
-        if (asType == ASConstants.TYPE_NUMBER)
-        {
-            cppType = Type.tFloat.getTypeSignature();
-        }
-        return cppType;
+        return typeMap.getOrDefault(asType, asType);
     }
 }
