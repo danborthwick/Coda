@@ -2,6 +2,8 @@ package cpp;
 
 import org.asdt.core.internal.antlr.AS3Parser;
 import uk.co.badgersinfoil.metaas.SyntaxException;
+import uk.co.badgersinfoil.metaas.dom.Expression;
+import uk.co.badgersinfoil.metaas.dom.ScriptElement;
 import uk.co.badgersinfoil.metaas.dom.Visibility;
 import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListToken;
@@ -85,7 +87,7 @@ public class CppBuilder
         if (p == -1) {
             return qualifiedName;
         }
-        return qualifiedName.substring(p+1);
+        return qualifiedName.substring(p + 1);
     }
 
     private static String packageNameFrom(String qualifiedName) {
@@ -136,10 +138,10 @@ public class CppBuilder
     }
 
     public ASTASArg newParam(String name, String type) {
-        LinkedListTree param = ASTUtils.newPlaceholderAST(AS3Parser.PARAM);
-        param.addChildWithTokens(ASTUtils.newAST(translatedType(type)));
-        param.appendToken(TokenBuilder.newSpace());
-        param.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
-        return new ASTASArg(param);
+        LinkedListTree ast = ASTUtils.newPlaceholderAST(AS3Parser.PARAM);
+        ast.addChildWithTokens(ASTUtils.newAST(translatedType(type)));
+        ast.appendToken(TokenBuilder.newSpace());
+        ast.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
+        return new ASTASArg(ast);
     }
 }

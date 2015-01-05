@@ -18,34 +18,49 @@ public class CppStatementTranslator {
 
         translators = new HashMap<>();
         translators.put(ASTASDeclarationStatement.class, new DeclarationTranslator());
+        translators.put(ASTASForStatement.class, new ForTranslator());
     }
 
-    Statement translateStatement(ASTScriptElement asStatement) {
+    public CppStatement translateStatement(ASTScriptElement asStatement) {
         StatementTranslator translator = translators.getOrDefault(asStatement.getClass(), fallbackTranslator);
         return translator.toCpp(asStatement);
     }
 
-    interface StatementTranslator {
-        public CppStatement toCpp(ASTScriptElement asStatement);
+    private abstract class StatementTranslator<StatementClass extends ASTScriptElement> {
+        public final CppStatement toCpp(ASTScriptElement asStatement)
+        {
+            return translate((StatementClass) asStatement);
+        }
+
+        protected abstract CppStatement translate(StatementClass asStatement);
     }
 
     /**
      * Does no translation, just duplicates the input statement.
      * Of use when AS and Cpp syntax is the same.
      */
-    class PassthroughTranslator implements StatementTranslator {
+    private class PassthroughTranslator extends StatementTranslator<ASTScriptElement> {
         @Override
-        public CppStatement toCpp(ASTScriptElement asStatement) {
+        protected CppStatement translate(ASTScriptElement asStatement) {
             LinkedListTree ast = ASTBuilder.dup(asStatement.getAST());
             return new CppStatement(ast);
         }
     }
 
-    class DeclarationTranslator implements StatementTranslator {
+    private class DeclarationTranslator extends StatementTranslator<ASTASDeclarationStatement> {
         @Override
-        public CppStatement toCpp(ASTScriptElement asStatementRaw) {
-            ASTASDeclarationStatement asStatement = (ASTASDeclarationStatement) asStatementRaw;
+        protected CppStatement translate(ASTASDeclarationStatement asStatement) {
             return builder.newDeclaration(asStatement.getFirstVarTypeName(), asStatement.getFirstVarName(), (ASTExpression) asStatement.getFirstVarInitializer());
+        }
+    }
+
+    private class ForTranslator extends StatementTranslator<ASTASForStatement> {
+        @Override
+        protected CppStatement translate(ASTASForStatement asStatement) {
+            return new CppStatement(ASTBuilder.newFor(
+                    translateStatement((ASTScriptElement) asStatement.getInit()).getAST(),
+                    translateStatement((ASTScriptElement) asStatement.getCondition()).getAST(),
+                    translateStatement((ASTScriptElement) asStatement.getUpdate()).getAST()));
         }
     }
 }

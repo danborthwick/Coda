@@ -14,7 +14,7 @@ package mypackage
             return _value;
         }
 
-        public function doubledValue() : int
+        private function doubledValue() : int
         {
             return 2 * getValue();
         }
@@ -24,5 +24,15 @@ package mypackage
             var hypotenuseSquared : Number = (sideALength * sideALength) + (sideBLength * sideBLength);
             return Math.sqrt(hypotenuseSquared);
         }
+
+        protected function simpleLoop() : void
+        {
+            var accumulator : int = 0;
+            for (var i : int = 0; i < getValue(); i++)
+            {
+                accumulator += i;
+            }
+        }
+
     }
 }
