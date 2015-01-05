@@ -1,10 +1,13 @@
 package cpp;
 
+import uk.co.badgersinfoil.metaas.ActionScriptProject;
 import uk.co.badgersinfoil.metaas.dom.Statement;
 import uk.co.badgersinfoil.metaas.impl.*;
 import uk.co.badgersinfoil.metaas.impl.antlr.LinkedListTree;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CppStatementTranslator {
@@ -57,10 +60,17 @@ public class CppStatementTranslator {
     private class ForTranslator extends StatementTranslator<ASTASForStatement> {
         @Override
         protected CppStatement translate(ASTASForStatement asStatement) {
-            return new CppStatement(ASTBuilder.newFor(
-                    translateStatement((ASTScriptElement) asStatement.getInit()).getAST(),
-                    translateStatement((ASTScriptElement) asStatement.getCondition()).getAST(),
-                    translateStatement((ASTScriptElement) asStatement.getUpdate()).getAST()));
+
+            ASTCppForStatement cppForStatement = builder.newFor(
+                    translateStatement((ASTScriptElement) asStatement.getInit()),
+                    translateStatement((ASTScriptElement) asStatement.getCondition()),
+                    translateStatement((ASTScriptElement) asStatement.getUpdate()));
+
+            for (ASTScriptElement asChildStatement : (List<ASTScriptElement>) asStatement.getStatementList()) {
+                cppForStatement.addStatement(translateStatement(asChildStatement));
+            }
+
+            return cppForStatement;
         }
     }
 }

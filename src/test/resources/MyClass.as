@@ -31,6 +31,7 @@ package mypackage
             for (var i : int = 0; i < getValue(); i++)
             {
                 accumulator += i;
+                accumulator += _value;
             }
         }
 

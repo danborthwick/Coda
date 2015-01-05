@@ -133,6 +133,26 @@ public class CppBuilder
 
     }
 
+    public ASTCppForStatement newFor(ASTScriptElement init, ASTScriptElement condition, ASTScriptElement update) {
+        ASTCppForStatement forStatement = new ASTCppForStatement(
+                trimTrailingSemi(init.getAST()), condition.getAST(), update.getAST());
+        appendBlock(forStatement.getAST());
+        return forStatement;
+    }
+
+    private LinkedListTree trimTrailingSemi(LinkedListTree inputAST)
+    {
+        LinkedListTree result = inputAST;
+        LinkedListToken stopToken = inputAST.getStopToken();
+        if (stopToken.getType() == AS3Parser.SEMI) {
+            result = ASTBuilder.dup(inputAST);
+            stopToken = result.getStopToken();
+            result.setStopToken(stopToken.getPrev());
+            stopToken.delete();
+        }
+        return result;
+    }
+
     private LinkedListToken translatedType(String type) {
         return TokenBuilder.newToken(AS3Parser.TYPE_NAME, types.translate(type));
     }
@@ -143,5 +163,12 @@ public class CppBuilder
         ast.appendToken(TokenBuilder.newSpace());
         ast.addChildWithTokens(ASTUtils.newAST(AS3Parser.IDENT, name));
         return new ASTASArg(ast);
+    }
+
+    private static LinkedListTree appendBlock(LinkedListTree ast) {
+        ast.appendToken(TokenBuilder.newSpace());
+        LinkedListTree block = ASTBuilder.newBlock();
+        ast.addChildWithTokens(block);
+        return block;
     }
 }
